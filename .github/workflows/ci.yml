@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore .\WalkaAmazonIntelligence.sln
+
+      - name: Build Release
+        run: dotnet build .\WalkaAmazonIntelligence.sln --configuration Release --no-restore -p:ContinuousIntegrationBuild=true
+
+      - name: Test Release
+        run: dotnet test .\WalkaAmazonIntelligence.sln --configuration Release --no-build --no-restore --logger "trx;LogFileName=test-results.trx"

@@ -72,7 +72,7 @@ Each collector validates configuration and supports bounded incremental and hist
 | Catalog/listings/A+ | Catalog Items, Listings Items, A+ APIs / LWA | daily snapshots; available history only | nextToken by endpoint | content hashes and immutable versions; unavailable entitlement explicit |
 | Inventory/FBA | inventory APIs and reports / LWA | current snapshots; historical report availability | nextToken / report polling | SKU/location/time; compare quantities; never invent past inventory |
 | Returns/refunds/fees/payments | reports and Finances APIs / LWA | overlap to accommodate adjustments; bounded backfill | API tokens and report limits | source transaction/component IDs; settlement reconciliation |
-| Pricing/promotions | Product Pricing and eligible reports / LWA | daily/current observations; history starts at collection | endpoint-specific limits | SKU/time/source; inaccessible coupon data shown unavailable |
+| Pricing/promotions | Product Pricing and eligible reports | daily/current observations; history starts at collection | endpoint-specific limits | SKU/time/source; inaccessible coupon data shown unavailable |
 | Ads profiles/entities | profile and campaign APIs / LWA + client/profile headers | daily refresh; API-supported history | pagination differs by ad product | profile/entity ID; status/bid/budget change events |
 | SP/SB/SD reporting | Ads reporting API / LWA + profile | rolling attribution refresh; report-type retention limits | async status and document, split date ranges | profile/date/entity/report dimensions; spend/sales totals |
 | SQP/SCP/search terms/baskets/repeat purchase | entitled Brand Analytics reports / LWA | complete weekly/monthly periods; allowed retention | async reports; period options | account/market/period/query/ASIN; period totals |
@@ -129,26 +129,26 @@ MVP acceptance requires successful release build/tests, Windows launch, migratio
 ## 16. Implementation tracker
 | ID | Work Item | Priority | Dependencies | Status | Tests | Notes |
 | -- | --------- | -------- | ------------ | ------ | ----- | ----- |
-| P00 | Repository, plan, solution, baseline | P0 | none | IN_PROGRESS | pending | Empty target; SDK 10.0.401 available |
-| P01 | Domain and metrics | P0 | P00 | NOT_STARTED | pending | |
-| P02 | Persistence and migrations | P0 | P01 | NOT_STARTED | pending | |
-| P03 | WPF shell/settings/localization | P0 | P02 | NOT_STARTED | pending | |
-| P04 | Sync, resilience, audit | P0 | P02 | NOT_STARTED | pending | |
-| P05 | Secure auth/capabilities | P0 | P04 | NOT_STARTED | pending | Live owner credentials required |
-| P06 | Seller data | P0 | P05 | NOT_STARTED | pending | |
-| P07 | Ads data | P0 | P05 | NOT_STARTED | pending | |
+| P00 | Repository, plan, solution, baseline | P0 | none | DONE | architecture + Windows CI | Solution baseline, README, ADRs and restore/build/test gate established |
+| P01 | Domain and metrics | P0 | P00 | NOT_STARTED | pending | Existing code must be audited against this item before status changes |
+| P02 | Persistence and migrations | P0 | P01 | NOT_STARTED | pending | Existing code must be audited against this item before status changes |
+| P03 | WPF shell/settings/localization | P0 | P02 | NOT_STARTED | pending | Existing code must be audited against this item before status changes |
+| P04 | Sync, resilience, audit | P0 | P02 | NOT_STARTED | pending | Existing code must be audited against this item before status changes |
+| P05 | Secure auth/capabilities | P0 | P04 | NOT_STARTED | pending | Live owner credentials required; existing code must be audited first |
+| P06 | Seller data | P0 | P05 | NOT_STARTED | pending | Existing code must be audited against this item before status changes |
+| P07 | Ads data | P0 | P05 | NOT_STARTED | pending | Existing code must be audited against this item before status changes |
 | P08 | Brand Analytics | P1 | P06 | NOT_STARTED | pending | Entitlement required |
 | P09 | Listing/image history | P1 | P06 | NOT_STARTED | pending | |
 | P10 | Finance and profit | P1 | P06 | NOT_STARTED | pending | |
 | P11 | Analytics aggregation | P0 | P06,P07 | NOT_STARTED | pending | |
-| P12 | Recommendations | P1 | P11 | NOT_STARTED | pending | |
-| P13 | Dashboards | P0 | P03,P11 | NOT_STARTED | pending | |
+| P12 | Recommendations | P1 | P11 | NOT_STARTED | pending | Existing analytics code does not imply tracker completion |
+| P13 | Dashboards | P0 | P03,P11 | NOT_STARTED | pending | Existing UI/database code must be audited first |
 | P14 | Browser fallback | P2 | P04,P05 | NOT_STARTED | pending | Owner login only |
 | P15 | Backfill | P1 | P06,P07 | NOT_STARTED | pending | |
 | P16 | Reconciliation | P0 | P06,P07 | NOT_STARTED | pending | |
-| P17 | Backup/recovery | P0 | P02 | NOT_STARTED | pending | |
+| P17 | Backup/recovery | P0 | P02 | NOT_STARTED | pending | Existing backup code must be audited first |
 | P18 | Installer | P1 | P13,P17 | NOT_STARTED | pending | |
 | P19 | Acceptance | P0 | all | NOT_STARTED | pending | Live credentials, signing and clean machine external |
 
 ## 17. Current evidence and next work
-Target was empty. No earlier repository or AGENTS.md exists in target. SDK 10.0.401 and Windows Desktop runtime 10.0.12 installed. Next: initialize Git and layered solution, establish build/tests, implement foundation. All development-generated files remain under target. No credentials have been supplied. Consult docs/DECISIONS.md for architectural changes.
+Recovered `main` at commit `96a5ba8c17e2927de71582b414cb037a87457a84`, the repository's only pre-continuation commit. It already contained the layered solution, WPF shell, SQLite persistence/migration, Seller/Ads connector foundations, worker/analytics code and five test projects, while the tracker still described an empty target. No open PRs or issues existed. P00 is now closed by adding the repository README, durable architecture decisions, a Windows GitHub Actions restore/Release-build/test gate, and an automated architecture-boundary test. Presence of later-phase code is not treated as completion evidence; each subsequent tracker item must be audited against its acceptance scope before status changes. Next dependency-valid item: P01 Domain and metrics. No credentials have been supplied.
