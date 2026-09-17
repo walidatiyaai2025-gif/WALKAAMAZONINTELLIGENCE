@@ -1,0 +1,15 @@
+**/bin/
+**/obj/
+.vs/
+.local/
+*.user
+*.db*
+*.log
+*.pfx
+*.env
+appsettings.Local.json
+**/BrowserProfile/
+**/RawReports/
+**/Backups/
+artifacts/
+TestResults/

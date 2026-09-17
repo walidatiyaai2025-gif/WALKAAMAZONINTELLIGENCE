@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\WalkaAmazonIntelligence.Application\WalkaAmazonIntelligence.Application.csproj" />
+    <ProjectReference Include="..\WalkaAmazonIntelligence.Persistence\WalkaAmazonIntelligence.Persistence.csproj" />
+    <ProjectReference Include="..\WalkaAmazonIntelligence.Infrastructure\WalkaAmazonIntelligence.Infrastructure.csproj" />
+    <ProjectReference Include="..\WalkaAmazonIntelligence.Connectors.AmazonSeller\WalkaAmazonIntelligence.Connectors.AmazonSeller.csproj" />
+    <ProjectReference Include="..\WalkaAmazonIntelligence.Connectors.AmazonAds\WalkaAmazonIntelligence.Connectors.AmazonAds.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

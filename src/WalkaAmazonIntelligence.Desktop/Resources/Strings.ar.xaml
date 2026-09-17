@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+ <sys:String x:Key="Dashboard">نظرة عامة</sys:String><sys:String x:Key="Connections">الاتصالات</sys:String>
+ <sys:String x:Key="Evidence">المصادر والمزامنة</sys:String><sys:String x:Key="Settings">التفضيلات</sys:String>
+ <sys:String x:Key="About">حول التطبيق</sys:String><sys:String x:Key="Title">تحليلات أمازون</sys:String>
+ <sys:String x:Key="Subtitle">رؤية واضحة لأعمالك مدعومة ببيانات المصدر.</sys:String>
+ <sys:String x:Key="Refresh">تحديث البيانات</sys:String><sys:String x:Key="Save">حفظ الإعدادات</sys:String>
+ <sys:String x:Key="Sales">مبيعات المنتجات</sys:String><sys:String x:Key="Spend">الإنفاق الإعلاني</sys:String>
+ <sys:String x:Key="Account">معرّف حساب البائع</sys:String><sys:String x:Key="Marketplace">معرّف السوق</sys:String>
+ <sys:String x:Key="Profile">معرّف حساب الإعلانات</sys:String><sys:String x:Key="Currency">العملة</sys:String>
+ <sys:String x:Key="Theme">فاتح / داكن</sys:String><sys:String x:Key="Language">English / العربية</sys:String>
+ <sys:String x:Key="Backup">إنشاء نسخة احتياطية موثقة</sys:String>
+</ResourceDictionary>
