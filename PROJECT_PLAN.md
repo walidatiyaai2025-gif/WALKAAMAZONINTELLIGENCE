@@ -130,7 +130,7 @@ MVP acceptance requires successful release build/tests, Windows launch, migratio
 | ID | Work Item | Priority | Dependencies | Status | Tests | Notes |
 | -- | --------- | -------- | ------------ | ------ | ----- | ----- |
 | P00 | Repository, plan, solution, baseline | P0 | none | DONE | architecture + Windows CI | Solution baseline, README, ADRs and restore/build/test gate established |
-| P01 | Domain and metrics | P0 | P00 | NOT_STARTED | pending | Existing code must be audited against this item before status changes |
+| P01 | Domain and metrics | P0 | P00 | DONE | domain metric boundary suite | Reason-coded nullable metrics, compatible scope/window checks, aggregate-ratio semantics, break-even metrics and stockout calculations verified |
 | P02 | Persistence and migrations | P0 | P01 | NOT_STARTED | pending | Existing code must be audited against this item before status changes |
 | P03 | WPF shell/settings/localization | P0 | P02 | NOT_STARTED | pending | Existing code must be audited against this item before status changes |
 | P04 | Sync, resilience, audit | P0 | P02 | NOT_STARTED | pending | Existing code must be audited against this item before status changes |
@@ -151,4 +151,4 @@ MVP acceptance requires successful release build/tests, Windows launch, migratio
 | P19 | Acceptance | P0 | all | NOT_STARTED | pending | Live credentials, signing and clean machine external |
 
 ## 17. Current evidence and next work
-Recovered `main` at commit `96a5ba8c17e2927de71582b414cb037a87457a84`, the repository's only pre-continuation commit. It already contained the layered solution, WPF shell, SQLite persistence/migration, Seller/Ads connector foundations, worker/analytics code and five test projects, while the tracker still described an empty target. No open PRs or issues existed. P00 is now closed by adding the repository README, durable architecture decisions, a Windows GitHub Actions restore/Release-build/test gate, and an automated architecture-boundary test. Presence of later-phase code is not treated as completion evidence; each subsequent tracker item must be audited against its acceptance scope before status changes. Next dependency-valid item: P01 Domain and metrics. No credentials have been supplied.
+Recovered `main` at commit `476344fe6e0914a7338d2c1b122fa1a955ca5d66` with P00 complete and Windows CI green. P01 audited the existing Domain implementation against the analytics rules instead of recreating it. The completed unit adds machine-readable unavailable reasons, account/market/currency/date-window comparability, aggregate ratios from summed components, attribution-incompatibility detection, contribution and break-even metrics, days-of-supply and conservative stockout-date calculation, with boundary-focused domain tests. No Amazon credentials, writes, browser automation or demo data are involved in this unit. Next dependency-valid item after verified CI and merge: P02 Persistence and migrations.
