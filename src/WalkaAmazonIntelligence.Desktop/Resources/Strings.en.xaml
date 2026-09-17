@@ -8,12 +8,13 @@
  <sys:String x:Key="Acos">ACOS · 7-DAY ATTRIBUTION</sys:String><sys:String x:Key="Coverage">DATA COVERAGE</sys:String>
  <sys:String x:Key="Account">Seller account ID</sys:String><sys:String x:Key="Marketplace">Marketplace ID</sys:String>
  <sys:String x:Key="Profile">Ads profile ID</sys:String><sys:String x:Key="Currency">Currency</sys:String>
- <sys:String x:Key="ClientId">LWA client ID</sys:String><sys:String x:Key="Region">Region · NA / EU / FE</sys:String>
+ <sys:String x:Key="ClientId">Legacy LWA client ID</sys:String><sys:String x:Key="SellerClientId">Seller LWA client ID</sys:String><sys:String x:Key="AdsClientId">Ads LWA client ID</sys:String><sys:String x:Key="Region">Region · NA / EU / FE</sys:String>
  <sys:String x:Key="SellerSync">Request / check Seller report</sys:String><sys:String x:Key="AdsSync">Request / check Ads report</sys:String>
+ <sys:String x:Key="TestSellerConnection">Test Seller reporting access</sys:String><sys:String x:Key="TestAdsConnection">Test Ads reporting access</sys:String>
  <sys:String x:Key="Backup">Create verified backup</sys:String><sys:String x:Key="Theme">Light / dark</sys:String>
  <sys:String x:Key="Language">English / العربية</sys:String><sys:String x:Key="NoData">No Amazon data imported. Configure your account and request a completed day's reports.</sys:String>
  <sys:String x:Key="ScopeNote">Metrics include only imported dates in the selected account, marketplace, profile and currency. Missing data is unavailable. Order items are not unique orders.</sys:String>
- <sys:String x:Key="ConnectionNote">Save the account scope first. Tokens are protected with Windows DPAPI. API access and report entitlements require authorization from Amazon.</sys:String>
+ <sys:String x:Key="ConnectionNote">Save the account scope, protect credentials, then use the read-only access checks. Tokens are protected with Windows DPAPI. Seller and Advertising use separate LWA client IDs. API access and report entitlements require authorization from Amazon.</sys:String>
  <sys:String x:Key="SellerSecret">Seller client secret</sys:String><sys:String x:Key="SellerRefresh">Seller refresh token</sys:String>
  <sys:String x:Key="AdsSecret">Ads client secret</sys:String><sys:String x:Key="AdsRefresh">Ads refresh token</sys:String>
  <sys:String x:Key="ProtectSecrets">Protect entered credentials</sys:String><sys:String x:Key="ReadOnly">READ ONLY</sys:String>
@@ -30,8 +31,10 @@
  <sys:String x:Key="CoverageNoImports">No imports</sys:String><sys:String x:Key="CoverageAsins">{0} ASINs · imported dates</sys:String>
  <sys:String x:Key="StatusReady">Ready. No sample data is loaded.</sys:String>
  <sys:String x:Key="StatusAuthRequired">AUTH_REQUIRED: supply valid credentials and account authorization.</sys:String>
+ <sys:String x:Key="StatusCapabilityUnavailable">Reporting capability unavailable: {0}.</sys:String>
+ <sys:String x:Key="StatusConnectionVerified">{0} reporting access verified with a read-only Amazon API call.</sys:String>
  <sys:String x:Key="StatusOperationFailed">Operation failed: {0}. Inspect sync and evidence status.</sys:String>
- <sys:String x:Key="StatusSettingsSaved">Settings saved. Connection is verified only after an authorized report request.</sys:String>
+ <sys:String x:Key="StatusSettingsSaved">Settings saved. Connection is verified only after the read-only capability check succeeds.</sys:String>
  <sys:String x:Key="StatusSecretsProtected">Entered credentials protected for this Windows user. Existing values are kept for blank fields.</sys:String>
  <sys:String x:Key="StatusBackupCreated">Database backup created and integrity checked.</sys:String>
  <sys:String x:Key="StatusThemeChanged">Theme preference saved.</sys:String><sys:String x:Key="StatusLanguageChanged">Language preference saved.</sys:String>

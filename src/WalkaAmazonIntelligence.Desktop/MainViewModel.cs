@@ -24,7 +24,8 @@ public partial class MainViewModel(DashboardService dashboard, DatabaseFactory d
     [ObservableProperty] private string profile = "";
     [ObservableProperty] private string currency = "USD";
     [ObservableProperty] private string region = "NA";
-    [ObservableProperty] private string clientId = "";
+    [ObservableProperty] private string sellerClientId = "";
+    [ObservableProperty] private string adsClientId = "";
     [ObservableProperty] private DateTime startDate = DateTime.Today.AddDays(-30);
     [ObservableProperty] private DateTime endDate = DateTime.Today.AddDays(-1);
     [ObservableProperty] private DateTime reportDate = DateTime.Today.AddDays(-2);
@@ -54,7 +55,10 @@ public partial class MainViewModel(DashboardService dashboard, DatabaseFactory d
         var settings = await dashboard.SettingsAsync();
         Account = settings.GetValueOrDefault("account", ""); Marketplace = settings.GetValueOrDefault("marketplace", "");
         Profile = settings.GetValueOrDefault("profile", ""); Currency = settings.GetValueOrDefault("currency", "USD");
-        Region = settings.GetValueOrDefault("region", "NA"); ClientId = settings.GetValueOrDefault("clientId", "");
+        Region = settings.GetValueOrDefault("region", "NA");
+        var legacyClientId = settings.GetValueOrDefault("clientId", "");
+        SellerClientId = settings.GetValueOrDefault("sellerClientId", legacyClientId);
+        AdsClientId = settings.GetValueOrDefault("adsClientId", legacyClientId);
         SetTheme(settings.GetValueOrDefault("theme", "Dark"));
         SetLanguage(settings.GetValueOrDefault("language", "en"));
         Status = L("StatusReady");
@@ -69,6 +73,7 @@ public partial class MainViewModel(DashboardService dashboard, DatabaseFactory d
         catch (Exception ex)
         {
             Status = ex is AuthenticationRequiredException ? L("StatusAuthRequired") :
+                ex is CapabilityUnavailableException capability ? string.Format(CultureInfo.CurrentCulture, L("StatusCapabilityUnavailable"), capability.Code) :
                 ex is ArgumentException ? ex.Message :
                 string.Format(CultureInfo.CurrentCulture, L("StatusOperationFailed"), ex.GetType().Name);
             Log.Warning("Operation failed: {ErrorType}", ex.GetType().Name);
@@ -83,7 +88,8 @@ public partial class MainViewModel(DashboardService dashboard, DatabaseFactory d
         foreach (var item in new Dictionary<string, string>
         {
             ["account"] = Account.Trim(), ["marketplace"] = Marketplace.Trim(), ["profile"] = Profile.Trim(),
-            ["currency"] = Currency.Trim().ToUpperInvariant(), ["region"] = Region.Trim().ToUpperInvariant(), ["clientId"] = ClientId.Trim()
+            ["currency"] = Currency.Trim().ToUpperInvariant(), ["region"] = Region.Trim().ToUpperInvariant(),
+            ["sellerClientId"] = SellerClientId.Trim(), ["adsClientId"] = AdsClientId.Trim()
         })
             await dashboard.SaveSettingAsync(item.Key, item.Value);
         Status = L("StatusSettingsSaved");
@@ -129,28 +135,101 @@ public partial class MainViewModel(DashboardService dashboard, DatabaseFactory d
         Status = L("StatusSecretsProtected");
     });
 
+    private (IReportConnector Connector, ICapabilityProbe Capability) CreateConnector(bool ads)
+    {
+        var client = http.CreateClient("api");
+        var clientId = ads ? AdsClientId.Trim() : SellerClientId.Trim();
+        var tokens = new LwaTokenProvider(client, secrets, ads ? "ads" : "seller", clientId);
+        if (ads)
+        {
+            var connector = new AdsReportConnector(new(client), tokens, Region.Trim().ToUpperInvariant(), clientId, Profile.Trim());
+            return (connector, connector);
+        }
+        else
+        {
+            var connector = new SalesTrafficConnector(new(client), tokens, Region.Trim().ToUpperInvariant());
+            return (connector, connector);
+        }
+    }
+
+    private void SetConnectionState(bool ads, string state)
+    {
+        if (ads) AdsStatus = state; else SellerStatus = state;
+    }
+
+    private async Task RecordConnectionOutcomeAsync(string source, string state, string code)
+    {
+        try { await dashboard.RecordConnectionAsync(source, state, code); }
+        catch (Exception ex) { Log.Warning("Connection audit failed: {ErrorType}", ex.GetType().Name); }
+    }
+
+    [RelayCommand] private Task TestSellerConnectionAsync() => TestConnectionAsync(false);
+    [RelayCommand] private Task TestAdsConnectionAsync() => TestConnectionAsync(true);
+
+    private Task TestConnectionAsync(bool ads) => Guard(async () =>
+    {
+        SetConnectionState(ads, "CONNECTING");
+        var (connector, capability) = CreateConnector(ads);
+        try
+        {
+            await capability.ProbeCapabilitiesAsync(Scope(), CancellationToken.None);
+            SetConnectionState(ads, "CONNECTED");
+            await RecordConnectionOutcomeAsync(connector.Source, "CONNECTED", "REPORTING_AVAILABLE");
+            Status = string.Format(CultureInfo.CurrentCulture, L("StatusConnectionVerified"), connector.Source);
+        }
+        catch (CapabilityUnavailableException ex)
+        {
+            SetConnectionState(ads, "DEGRADED");
+            await RecordConnectionOutcomeAsync(connector.Source, "DEGRADED", ex.Code);
+            throw;
+        }
+        catch (AuthenticationRequiredException ex)
+        {
+            SetConnectionState(ads, "AUTH_REQUIRED");
+            await RecordConnectionOutcomeAsync(connector.Source, "AUTH_REQUIRED", ex.StatusCode is int statusCode ? $"HTTP_{statusCode}" : "AUTH_REQUIRED");
+            throw;
+        }
+        catch
+        {
+            SetConnectionState(ads, "ERROR");
+            await RecordConnectionOutcomeAsync(connector.Source, "ERROR", "CONNECTOR_ERROR");
+            throw;
+        }
+    });
+
     [RelayCommand] private Task SellerSyncAsync() => RunSyncAsync(false);
     [RelayCommand] private Task AdsSyncAsync() => RunSyncAsync(true);
 
     private Task RunSyncAsync(bool ads) => Guard(async () =>
     {
-        if (ads) AdsStatus = "CONNECTING"; else SellerStatus = "CONNECTING";
+        SetConnectionState(ads, "CONNECTING");
+        var (connector, _) = CreateConnector(ads);
         try
         {
-            var client = http.CreateClient("api");
-            var tokens = new LwaTokenProvider(client, secrets, ads ? "ads" : "seller", ClientId.Trim());
-            IReportConnector connector = ads
-                ? new AdsReportConnector(new(client), tokens, Region, ClientId.Trim(), Profile.Trim())
-                : new SalesTrafficConnector(new(client), tokens, Region);
             IReportParser parser = ads ? new AdsReportParser() : new SalesTrafficParser();
             Status = await sync.StepAsync(connector, parser, Scope(), DateOnly.FromDateTime(ReportDate));
-            if (ads) AdsStatus = "CONNECTED"; else SellerStatus = "CONNECTED";
+            SetConnectionState(ads, "CONNECTED");
+            await RecordConnectionOutcomeAsync(connector.Source, "CONNECTED", "SYNC_AUTHORIZED");
             await RefreshCoreAsync();
         }
-        catch (Exception ex)
+        catch (CapabilityUnavailableException ex)
         {
-            var state = ex is AuthenticationRequiredException ? "AUTH_REQUIRED" : "ERROR";
-            if (ads) AdsStatus = state; else SellerStatus = state;
+            SetConnectionState(ads, "DEGRADED");
+            await RecordConnectionOutcomeAsync(connector.Source, "DEGRADED", ex.Code);
+            await RefreshCoreAsync();
+            throw;
+        }
+        catch (AuthenticationRequiredException ex)
+        {
+            SetConnectionState(ads, "AUTH_REQUIRED");
+            await RecordConnectionOutcomeAsync(connector.Source, "AUTH_REQUIRED", ex.StatusCode is int statusCode ? $"HTTP_{statusCode}" : "AUTH_REQUIRED");
+            await RefreshCoreAsync();
+            throw;
+        }
+        catch
+        {
+            SetConnectionState(ads, "ERROR");
+            await RecordConnectionOutcomeAsync(connector.Source, "ERROR", "CONNECTOR_ERROR");
             await RefreshCoreAsync();
             throw;
         }

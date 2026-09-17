@@ -28,7 +28,7 @@ public sealed class DashboardService(DatabaseFactory factory)
 
     public async Task SaveSettingAsync(string key, string value, CancellationToken ct = default)
     {
-        if (key is not ("account" or "marketplace" or "profile" or "currency" or "region" or "theme" or "language" or "clientId"))
+        if (key is not ("account" or "marketplace" or "profile" or "currency" or "region" or "theme" or "language" or "clientId" or "sellerClientId" or "adsClientId"))
             throw new ArgumentException("Setting is not allowlisted; secrets must use protected storage.");
 
         value = value.Trim();
@@ -52,6 +52,32 @@ public sealed class DashboardService(DatabaseFactory factory)
         var row = await db.Settings.FindAsync([key], ct);
         if (row is null) db.Settings.Add(new() { Key = key, Value = value }); else row.Value = value;
         db.Audit.Add(new() { Action = "SETTING_CHANGED", Detail = key });
+        await db.SaveChangesAsync(ct);
+    }
+
+    public async Task RecordConnectionAsync(string source, string state, string code, CancellationToken ct = default)
+    {
+        source = source switch
+        {
+            "Seller" => "Seller",
+            "Ads" => "Ads",
+            _ => throw new ArgumentException("Unknown connector source.", nameof(source))
+        };
+        state = state switch
+        {
+            "CONNECTED" => "CONNECTED",
+            "AUTH_REQUIRED" => "AUTH_REQUIRED",
+            "DEGRADED" => "DEGRADED",
+            "ERROR" => "ERROR",
+            _ => throw new ArgumentException("Unknown connector state.", nameof(state))
+        };
+        code = code.Trim().ToUpperInvariant();
+        if (string.IsNullOrWhiteSpace(code) || code.Length > 80 ||
+            code.Any(c => !(char.IsAsciiLetterUpper(c) || char.IsAsciiDigit(c) || c == '_')))
+            throw new ArgumentException("Connection code must be a safe machine-readable identifier.", nameof(code));
+
+        await using var db = factory.Create();
+        db.Audit.Add(new() { Action = "CONNECTION_CHECK", Detail = $"{source};{state};{code}" });
         await db.SaveChangesAsync(ct);
     }
 

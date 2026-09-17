@@ -7,7 +7,37 @@ public interface ISecretStore
     Task<string?> ReadAsync(string name, CancellationToken ct = default);
 }
 public interface IAccessTokenProvider { Task<string> GetAsync(CancellationToken ct); }
-public sealed class AuthenticationRequiredException() : Exception("AUTH_REQUIRED: configure or renew Amazon authorization.");
+public interface IRefreshableAccessTokenProvider : IAccessTokenProvider
+{
+    Task InvalidateAsync(CancellationToken ct);
+}
+public interface ICapabilityProbe
+{
+    Task ProbeCapabilitiesAsync(DataScope scope, CancellationToken ct);
+}
+public sealed class AuthenticationRequiredException(int? statusCode = null)
+    : Exception("AUTH_REQUIRED: configure or renew Amazon authorization.")
+{
+    public int? StatusCode { get; } = statusCode;
+}
+public sealed class CapabilityUnavailableException : Exception
+{
+    public string Code { get; }
+
+    public CapabilityUnavailableException(string code)
+        : base($"CAPABILITY_UNAVAILABLE: {ValidateCode(code)}.")
+    {
+        Code = ValidateCode(code);
+    }
+
+    private static string ValidateCode(string code)
+    {
+        if (string.IsNullOrWhiteSpace(code) || code.Length > 80 ||
+            code.Any(c => !(char.IsAsciiLetterUpper(c) || char.IsAsciiDigit(c) || c == '_')))
+            throw new ArgumentException("Capability code must be an uppercase machine-readable identifier.", nameof(code));
+        return code;
+    }
+}
 public sealed class RemoteApiException(int status) : Exception($"Amazon request failed (HTTP {status}).")
 { public int StatusCode { get; } = status; }
 public sealed class ReportCreationUncertainException(Guid syncRunId, Exception? inner = null)

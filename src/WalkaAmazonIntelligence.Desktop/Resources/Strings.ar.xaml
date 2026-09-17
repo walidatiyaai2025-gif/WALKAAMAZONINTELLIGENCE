@@ -8,12 +8,13 @@
  <sys:String x:Key="Acos">ACOS · إسناد 7 أيام</sys:String><sys:String x:Key="Coverage">تغطية البيانات</sys:String>
  <sys:String x:Key="Account">معرّف حساب البائع</sys:String><sys:String x:Key="Marketplace">معرّف السوق</sys:String>
  <sys:String x:Key="Profile">معرّف ملف الإعلانات</sys:String><sys:String x:Key="Currency">العملة</sys:String>
- <sys:String x:Key="ClientId">معرّف عميل LWA</sys:String><sys:String x:Key="Region">المنطقة · NA / EU / FE</sys:String>
+ <sys:String x:Key="ClientId">معرّف عميل LWA القديم</sys:String><sys:String x:Key="SellerClientId">معرّف عميل LWA للبائع</sys:String><sys:String x:Key="AdsClientId">معرّف عميل LWA للإعلانات</sys:String><sys:String x:Key="Region">المنطقة · NA / EU / FE</sys:String>
  <sys:String x:Key="SellerSync">طلب / فحص تقرير البائع</sys:String><sys:String x:Key="AdsSync">طلب / فحص تقرير الإعلانات</sys:String>
+ <sys:String x:Key="TestSellerConnection">اختبار صلاحية تقارير البائع</sys:String><sys:String x:Key="TestAdsConnection">اختبار صلاحية تقارير الإعلانات</sys:String>
  <sys:String x:Key="Backup">إنشاء نسخة احتياطية موثّقة</sys:String><sys:String x:Key="Theme">فاتح / داكن</sys:String>
  <sys:String x:Key="Language">English / العربية</sys:String><sys:String x:Key="NoData">لم يتم استيراد بيانات من أمازون. اضبط الحساب ثم اطلب تقارير ليوم مكتمل.</sys:String>
  <sys:String x:Key="ScopeNote">تتضمن المقاييس التواريخ المستوردة فقط ضمن الحساب والسوق وملف الإعلانات والعملة المحددة. البيانات المفقودة تظهر كغير متاحة. عناصر الطلب ليست عدد الطلبات الفريدة.</sys:String>
- <sys:String x:Key="ConnectionNote">احفظ نطاق الحساب أولًا. يتم حماية الرموز باستخدام Windows DPAPI. يتطلب الوصول إلى API والتقارير تفويضًا من أمازون.</sys:String>
+ <sys:String x:Key="ConnectionNote">احفظ نطاق الحساب واحمِ بيانات الاعتماد ثم استخدم اختبارات الوصول للقراءة فقط. تتم حماية الرموز باستخدام Windows DPAPI. يستخدم البائع والإعلانات معرّفي عميل LWA منفصلين. يتطلب الوصول إلى API والتقارير تفويضًا من أمازون.</sys:String>
  <sys:String x:Key="SellerSecret">سر عميل البائع</sys:String><sys:String x:Key="SellerRefresh">رمز تحديث البائع</sys:String>
  <sys:String x:Key="AdsSecret">سر عميل الإعلانات</sys:String><sys:String x:Key="AdsRefresh">رمز تحديث الإعلانات</sys:String>
  <sys:String x:Key="ProtectSecrets">حماية بيانات الاعتماد المدخلة</sys:String><sys:String x:Key="ReadOnly">للقراءة فقط</sys:String>
@@ -30,8 +31,10 @@
  <sys:String x:Key="CoverageNoImports">لا توجد عمليات استيراد</sys:String><sys:String x:Key="CoverageAsins">{0} ASIN · تواريخ مستوردة</sys:String>
  <sys:String x:Key="StatusReady">جاهز. لا يتم تحميل أي بيانات تجريبية.</sys:String>
  <sys:String x:Key="StatusAuthRequired">AUTH_REQUIRED: أدخل بيانات اعتماد صالحة وتفويض الحساب.</sys:String>
+ <sys:String x:Key="StatusCapabilityUnavailable">صلاحية التقارير غير متاحة: {0}.</sys:String>
+ <sys:String x:Key="StatusConnectionVerified">تم التحقق من صلاحية تقارير {0} عبر استدعاء Amazon API للقراءة فقط.</sys:String>
  <sys:String x:Key="StatusOperationFailed">فشلت العملية: {0}. راجع حالة المزامنة والأدلة.</sys:String>
- <sys:String x:Key="StatusSettingsSaved">تم حفظ الإعدادات. لا يتم اعتبار الاتصال موثّقًا إلا بعد طلب تقرير بتفويض صالح.</sys:String>
+ <sys:String x:Key="StatusSettingsSaved">تم حفظ الإعدادات. لا يعتبر الاتصال موثّقًا إلا بعد نجاح اختبار الصلاحيات للقراءة فقط.</sys:String>
  <sys:String x:Key="StatusSecretsProtected">تمت حماية بيانات الاعتماد المدخلة لمستخدم Windows الحالي. الحقول الفارغة لا تستبدل القيم الحالية.</sys:String>
  <sys:String x:Key="StatusBackupCreated">تم إنشاء نسخة احتياطية لقاعدة البيانات والتحقق من سلامتها.</sys:String>
  <sys:String x:Key="StatusThemeChanged">تم حفظ تفضيل المظهر.</sys:String><sys:String x:Key="StatusLanguageChanged">تم حفظ تفضيل اللغة.</sys:String>
