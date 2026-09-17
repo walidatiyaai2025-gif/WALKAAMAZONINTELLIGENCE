@@ -51,3 +51,9 @@ The repository baseline is not considered complete solely because the solution e
 **Status:** Accepted — 2026-09-17
 
 Domain calculations expose nullable compatibility wrappers for existing callers and richer result objects that carry a machine-readable unavailability reason. Missing inputs, zero denominators, invalid negative inputs, incompatible account/market/currency/date windows, attribution exceeding total sales, invalid conversion rates and nonpositive inventory velocity are distinct states rather than silent zeroes. Aggregate ratios are calculated from summed numerators and denominators, not averaged row ratios. Organic-sales estimates require compatible scope and reporting windows. Stockout dates round fractional days of supply upward to the next observation date and remain unavailable when velocity is nonpositive.
+
+## ADR-009 — Evidence source and fact type are a persistence invariant
+
+**Status:** Accepted — 2026-09-17
+
+The persistence boundary must reject an artifact whose declared source does not match the fact type being imported. Seller evidence can materialize Seller facts only; Advertising evidence can materialize Advertising facts only and requires an Ads profile. Artifact identity and natural keys are validated before any destructive replacement starts. Revision replacement remains inside one SQLite transaction so a failed insert, foreign-key violation, reconciliation failure or cancellation cannot commit deletion of the previously authoritative facts. Migration/model drift, foreign keys and unique natural-key constraints are verified by automated tests against a real migrated SQLite database.
