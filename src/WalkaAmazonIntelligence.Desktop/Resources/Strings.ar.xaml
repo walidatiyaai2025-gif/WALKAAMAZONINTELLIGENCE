@@ -1,12 +1,38 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=System.Runtime">
  <sys:String x:Key="Dashboard">نظرة عامة</sys:String><sys:String x:Key="Connections">الاتصالات</sys:String>
- <sys:String x:Key="Evidence">المصادر والمزامنة</sys:String><sys:String x:Key="Settings">التفضيلات</sys:String>
+ <sys:String x:Key="Evidence">الأدلة والمزامنة</sys:String><sys:String x:Key="Settings">التفضيلات</sys:String>
  <sys:String x:Key="About">حول التطبيق</sys:String><sys:String x:Key="Title">تحليلات أمازون</sys:String>
- <sys:String x:Key="Subtitle">رؤية واضحة لأعمالك مدعومة ببيانات المصدر.</sys:String>
- <sys:String x:Key="Refresh">تحديث البيانات</sys:String><sys:String x:Key="Save">حفظ الإعدادات</sys:String>
+ <sys:String x:Key="Subtitle">رؤية واضحة لأعمالك مدعومة بأدلة المصدر.</sys:String>
+ <sys:String x:Key="Refresh">تحديث النظرة العامة</sys:String><sys:String x:Key="Save">حفظ الإعدادات</sys:String>
  <sys:String x:Key="Sales">مبيعات المنتجات</sys:String><sys:String x:Key="Spend">الإنفاق الإعلاني</sys:String>
+ <sys:String x:Key="Acos">ACOS · إسناد 7 أيام</sys:String><sys:String x:Key="Coverage">تغطية البيانات</sys:String>
  <sys:String x:Key="Account">معرّف حساب البائع</sys:String><sys:String x:Key="Marketplace">معرّف السوق</sys:String>
- <sys:String x:Key="Profile">معرّف حساب الإعلانات</sys:String><sys:String x:Key="Currency">العملة</sys:String>
- <sys:String x:Key="Theme">فاتح / داكن</sys:String><sys:String x:Key="Language">English / العربية</sys:String>
- <sys:String x:Key="Backup">إنشاء نسخة احتياطية موثقة</sys:String>
+ <sys:String x:Key="Profile">معرّف ملف الإعلانات</sys:String><sys:String x:Key="Currency">العملة</sys:String>
+ <sys:String x:Key="ClientId">معرّف عميل LWA</sys:String><sys:String x:Key="Region">المنطقة · NA / EU / FE</sys:String>
+ <sys:String x:Key="SellerSync">طلب / فحص تقرير البائع</sys:String><sys:String x:Key="AdsSync">طلب / فحص تقرير الإعلانات</sys:String>
+ <sys:String x:Key="Backup">إنشاء نسخة احتياطية موثّقة</sys:String><sys:String x:Key="Theme">فاتح / داكن</sys:String>
+ <sys:String x:Key="Language">English / العربية</sys:String><sys:String x:Key="NoData">لم يتم استيراد بيانات من أمازون. اضبط الحساب ثم اطلب تقارير ليوم مكتمل.</sys:String>
+ <sys:String x:Key="ScopeNote">تتضمن المقاييس التواريخ المستوردة فقط ضمن الحساب والسوق وملف الإعلانات والعملة المحددة. البيانات المفقودة تظهر كغير متاحة. عناصر الطلب ليست عدد الطلبات الفريدة.</sys:String>
+ <sys:String x:Key="ConnectionNote">احفظ نطاق الحساب أولًا. يتم حماية الرموز باستخدام Windows DPAPI. يتطلب الوصول إلى API والتقارير تفويضًا من أمازون.</sys:String>
+ <sys:String x:Key="SellerSecret">سر عميل البائع</sys:String><sys:String x:Key="SellerRefresh">رمز تحديث البائع</sys:String>
+ <sys:String x:Key="AdsSecret">سر عميل الإعلانات</sys:String><sys:String x:Key="AdsRefresh">رمز تحديث الإعلانات</sys:String>
+ <sys:String x:Key="ProtectSecrets">حماية بيانات الاعتماد المدخلة</sys:String><sys:String x:Key="ReadOnly">للقراءة فقط</sys:String>
+ <sys:String x:Key="AsinColumn">ASIN</sys:String><sys:String x:Key="SalesColumn">المبيعات</sys:String><sys:String x:Key="UnitsColumn">الوحدات</sys:String>
+ <sys:String x:Key="OrderItemsColumn">عناصر الطلب</sys:String><sys:String x:Key="SessionsColumn">الجلسات</sys:String><sys:String x:Key="AdSpendColumn">إنفاق الإعلانات</sys:String>
+ <sys:String x:Key="AdSalesColumn">مبيعات الإعلانات · 7 أيام</sys:String><sys:String x:Key="AcosColumn">ACOS</sys:String><sys:String x:Key="RoasColumn">ROAS</sys:String>
+ <sys:String x:Key="TacosColumn">TACOS*</sys:String><sys:String x:Key="SourceColumn">المصدر</sys:String><sys:String x:Key="DateColumn">التاريخ</sys:String>
+ <sys:String x:Key="StatusColumn">الحالة</sys:String><sys:String x:Key="RecordsColumn">السجلات</sys:String><sys:String x:Key="ReportIdColumn">معرّف التقرير</sys:String>
+ <sys:String x:Key="ErrorColumn">الخطأ</sys:String><sys:String x:Key="RowsColumn">الصفوف</sys:String><sys:String x:Key="ShaColumn">SHA-256</sys:String>
+ <sys:String x:Key="BytesColumn">بايت</sys:String>
+ <sys:String x:Key="StorageHint">يمكن ضبط مسار التخزين عبر WALKA_Storage__Root. أعد تشغيل التطبيق لتطبيق التغيير.</sys:String>
+ <sys:String x:Key="AboutBody">نسخة تطوير للقراءة فقط. تم تنفيذ مسارات تقارير مبيعات وحركة البائع وتقارير Sponsored Products، بينما يظل اعتماد الحساب الحي قيد الانتظار. ما زالت مصادر البيانات الأوسع والجدولة غير المراقبة والتحقق من المثبّت وواجهات التحليلات اللاحقة ضمن خارطة الطريق.</sys:String>
+ <sys:String x:Key="AboutReadOnly">لا يعدّل هذا التطبيق عروض أسعار أمازون أو الميزانيات أو القوائم أو الحملات.</sys:String>
+ <sys:String x:Key="CoverageNoImports">لا توجد عمليات استيراد</sys:String><sys:String x:Key="CoverageAsins">{0} ASIN · تواريخ مستوردة</sys:String>
+ <sys:String x:Key="StatusReady">جاهز. لا يتم تحميل أي بيانات تجريبية.</sys:String>
+ <sys:String x:Key="StatusAuthRequired">AUTH_REQUIRED: أدخل بيانات اعتماد صالحة وتفويض الحساب.</sys:String>
+ <sys:String x:Key="StatusOperationFailed">فشلت العملية: {0}. راجع حالة المزامنة والأدلة.</sys:String>
+ <sys:String x:Key="StatusSettingsSaved">تم حفظ الإعدادات. لا يتم اعتبار الاتصال موثّقًا إلا بعد طلب تقرير بتفويض صالح.</sys:String>
+ <sys:String x:Key="StatusSecretsProtected">تمت حماية بيانات الاعتماد المدخلة لمستخدم Windows الحالي. الحقول الفارغة لا تستبدل القيم الحالية.</sys:String>
+ <sys:String x:Key="StatusBackupCreated">تم إنشاء نسخة احتياطية لقاعدة البيانات والتحقق من سلامتها.</sys:String>
+ <sys:String x:Key="StatusThemeChanged">تم حفظ تفضيل المظهر.</sys:String><sys:String x:Key="StatusLanguageChanged">تم حفظ تفضيل اللغة.</sys:String>
 </ResourceDictionary>

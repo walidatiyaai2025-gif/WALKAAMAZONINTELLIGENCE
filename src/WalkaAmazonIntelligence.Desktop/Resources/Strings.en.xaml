@@ -16,5 +16,23 @@
  <sys:String x:Key="ConnectionNote">Save the account scope first. Tokens are protected with Windows DPAPI. API access and report entitlements require authorization from Amazon.</sys:String>
  <sys:String x:Key="SellerSecret">Seller client secret</sys:String><sys:String x:Key="SellerRefresh">Seller refresh token</sys:String>
  <sys:String x:Key="AdsSecret">Ads client secret</sys:String><sys:String x:Key="AdsRefresh">Ads refresh token</sys:String>
- <sys:String x:Key="ProtectSecrets">Protect entered credentials</sys:String>
+ <sys:String x:Key="ProtectSecrets">Protect entered credentials</sys:String><sys:String x:Key="ReadOnly">READ ONLY</sys:String>
+ <sys:String x:Key="AsinColumn">ASIN</sys:String><sys:String x:Key="SalesColumn">Sales</sys:String><sys:String x:Key="UnitsColumn">Units</sys:String>
+ <sys:String x:Key="OrderItemsColumn">Order items</sys:String><sys:String x:Key="SessionsColumn">Sessions</sys:String><sys:String x:Key="AdSpendColumn">Ad spend</sys:String>
+ <sys:String x:Key="AdSalesColumn">Ad sales · 7d</sys:String><sys:String x:Key="AcosColumn">ACOS</sys:String><sys:String x:Key="RoasColumn">ROAS</sys:String>
+ <sys:String x:Key="TacosColumn">TACOS*</sys:String><sys:String x:Key="SourceColumn">Source</sys:String><sys:String x:Key="DateColumn">Date</sys:String>
+ <sys:String x:Key="StatusColumn">Status</sys:String><sys:String x:Key="RecordsColumn">Records</sys:String><sys:String x:Key="ReportIdColumn">Report ID</sys:String>
+ <sys:String x:Key="ErrorColumn">Error</sys:String><sys:String x:Key="RowsColumn">Rows</sys:String><sys:String x:Key="ShaColumn">SHA-256</sys:String>
+ <sys:String x:Key="BytesColumn">Bytes</sys:String>
+ <sys:String x:Key="StorageHint">Storage is configurable through WALKA_Storage__Root. Restart to apply.</sys:String>
+ <sys:String x:Key="AboutBody">Read-only development build. Seller Sales &amp; Traffic and Sponsored Products reporting paths are implemented; live account acceptance is pending. Broader collectors, unattended scheduling, installer validation and later intelligence views remain on the roadmap.</sys:String>
+ <sys:String x:Key="AboutReadOnly">No Amazon bids, budgets, listings or campaigns are modified by this application.</sys:String>
+ <sys:String x:Key="CoverageNoImports">No imports</sys:String><sys:String x:Key="CoverageAsins">{0} ASINs · imported dates</sys:String>
+ <sys:String x:Key="StatusReady">Ready. No sample data is loaded.</sys:String>
+ <sys:String x:Key="StatusAuthRequired">AUTH_REQUIRED: supply valid credentials and account authorization.</sys:String>
+ <sys:String x:Key="StatusOperationFailed">Operation failed: {0}. Inspect sync and evidence status.</sys:String>
+ <sys:String x:Key="StatusSettingsSaved">Settings saved. Connection is verified only after an authorized report request.</sys:String>
+ <sys:String x:Key="StatusSecretsProtected">Entered credentials protected for this Windows user. Existing values are kept for blank fields.</sys:String>
+ <sys:String x:Key="StatusBackupCreated">Database backup created and integrity checked.</sys:String>
+ <sys:String x:Key="StatusThemeChanged">Theme preference saved.</sys:String><sys:String x:Key="StatusLanguageChanged">Language preference saved.</sys:String>
 </ResourceDictionary>

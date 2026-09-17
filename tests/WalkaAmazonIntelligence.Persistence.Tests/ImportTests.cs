@@ -139,10 +139,33 @@ public class ImportTests
     }
 
     [Fact]
-    public async Task SettingsRejectSecretsAndPersistAllowedValues()
+    public async Task SettingsAreCanonicalPersistedAuditedAndRejectSecretsOrUnsupportedPreferences()
     {
         var factory = await Create(); var service = new DashboardService(factory);
+
         await Assert.ThrowsAsync<ArgumentException>(() => service.SaveSettingAsync("refresh_token", "secret"));
-        await service.SaveSettingAsync("currency", "USD"); Assert.Equal("USD", (await service.SettingsAsync())["currency"]);
+        await Assert.ThrowsAsync<ArgumentException>(() => service.SaveSettingAsync("language", "fr"));
+        await Assert.ThrowsAsync<ArgumentException>(() => service.SaveSettingAsync("theme", "Blue"));
+
+        await service.SaveSettingAsync("account", "TEST_FIXTURE");
+        await service.SaveSettingAsync("currency", "usd");
+        await service.SaveSettingAsync("region", "na");
+        await service.SaveSettingAsync("language", "AR");
+        await service.SaveSettingAsync("theme", "light");
+        await service.SaveSettingAsync("language", "en");
+
+        var settings = await service.SettingsAsync();
+        Assert.Equal("TEST_FIXTURE", settings["account"]);
+        Assert.Equal("USD", settings["currency"]);
+        Assert.Equal("NA", settings["region"]);
+        Assert.Equal("en", settings["language"]);
+        Assert.Equal("Light", settings["theme"]);
+
+        await using var db = factory.Create();
+        Assert.Equal(5, await db.Settings.CountAsync());
+        var audits = await db.Audit.AsNoTracking().Where(x => x.Action == "SETTING_CHANGED").ToListAsync();
+        Assert.Equal(6, audits.Count);
+        Assert.All(audits, audit => Assert.DoesNotContain("TEST_FIXTURE", audit.Detail));
+        Assert.All(audits, audit => Assert.DoesNotContain("secret", audit.Detail, StringComparison.OrdinalIgnoreCase));
     }
 }

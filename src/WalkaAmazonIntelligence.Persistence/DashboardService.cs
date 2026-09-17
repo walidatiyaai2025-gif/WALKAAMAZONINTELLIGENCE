@@ -25,16 +25,36 @@ public sealed class DashboardService(DatabaseFactory factory)
                 spend, adSales, Metrics.Acos(spend, adSales), Metrics.Roas(adSales, spend), aligned ? Metrics.Tacos(spend, revenue) : null);
         }).ToList();
     }
+
     public async Task SaveSettingAsync(string key, string value, CancellationToken ct = default)
     {
         if (key is not ("account" or "marketplace" or "profile" or "currency" or "region" or "theme" or "language" or "clientId"))
             throw new ArgumentException("Setting is not allowlisted; secrets must use protected storage.");
+
+        value = value.Trim();
+        if (value.Length > 512)
+            throw new ArgumentException("Setting value is too long.");
+
+        value = key switch
+        {
+            "language" when value.Equals("en", StringComparison.OrdinalIgnoreCase) => "en",
+            "language" when value.Equals("ar", StringComparison.OrdinalIgnoreCase) => "ar",
+            "language" => throw new ArgumentException("Language must be en or ar."),
+            "theme" when value.Equals("Dark", StringComparison.OrdinalIgnoreCase) => "Dark",
+            "theme" when value.Equals("Light", StringComparison.OrdinalIgnoreCase) => "Light",
+            "theme" => throw new ArgumentException("Theme must be Dark or Light."),
+            "currency" => value.ToUpperInvariant(),
+            "region" => value.ToUpperInvariant(),
+            _ => value
+        };
+
         await using var db = factory.Create();
         var row = await db.Settings.FindAsync([key], ct);
         if (row is null) db.Settings.Add(new() { Key = key, Value = value }); else row.Value = value;
         db.Audit.Add(new() { Action = "SETTING_CHANGED", Detail = key });
         await db.SaveChangesAsync(ct);
     }
+
     public async Task<Dictionary<string, string>> SettingsAsync(CancellationToken ct = default)
     {
         await using var db = factory.Create();

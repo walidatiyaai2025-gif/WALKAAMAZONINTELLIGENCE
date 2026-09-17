@@ -32,3 +32,15 @@ jobs:
 
       - name: Test Release
         run: dotnet test .\WalkaAmazonIntelligence.sln --configuration Release --no-build --no-restore --logger "trx;LogFileName=test-results.trx"
+
+      - name: WPF shell smoke
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP ("walka-smoke-" + [guid]::NewGuid().ToString("N"))
+          $env:WALKA_Storage__Root = $root
+          $exe = ".\src\WalkaAmazonIntelligence.Desktop\bin\Release\net10.0-windows\WalkaAmazonIntelligence.Desktop.exe"
+          & $exe --smoke-test
+          if ($LASTEXITCODE -ne 0) { throw "WPF smoke test exited with code $LASTEXITCODE." }
+          $marker = Join-Path $root "Logs\smoke.ok"
+          if (-not (Test-Path $marker)) { throw "WPF smoke marker was not created." }
+          Get-Content $marker
