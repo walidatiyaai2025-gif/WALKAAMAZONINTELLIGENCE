@@ -157,10 +157,10 @@ public partial class MainViewModel(DashboardService dashboard, DatabaseFactory d
         if (ads) AdsStatus = state; else SellerStatus = state;
     }
 
-    private async Task RecordConnectionOutcomeAsync(string source, string state, string code)
+    private async Task RecordConnectionFailureOutcomeAsync(string source, string state, string code)
     {
         try { await dashboard.RecordConnectionAsync(source, state, code); }
-        catch (Exception ex) { Log.Warning("Connection audit failed: {ErrorType}", ex.GetType().Name); }
+        catch (Exception ex) { Log.Warning("Connection failure audit could not persist: {ErrorType}", ex.GetType().Name); }
     }
 
     [RelayCommand] private Task TestSellerConnectionAsync() => TestConnectionAsync(false);
@@ -173,26 +173,27 @@ public partial class MainViewModel(DashboardService dashboard, DatabaseFactory d
         try
         {
             await capability.ProbeCapabilitiesAsync(Scope(), CancellationToken.None);
+            // A successful connection is not claimed until the required audit event is durable.
+            await dashboard.RecordConnectionAsync(connector.Source, "CONNECTED", "REPORTING_AVAILABLE");
             SetConnectionState(ads, "CONNECTED");
-            await RecordConnectionOutcomeAsync(connector.Source, "CONNECTED", "REPORTING_AVAILABLE");
             Status = string.Format(CultureInfo.CurrentCulture, L("StatusConnectionVerified"), connector.Source);
         }
         catch (CapabilityUnavailableException ex)
         {
             SetConnectionState(ads, "DEGRADED");
-            await RecordConnectionOutcomeAsync(connector.Source, "DEGRADED", ex.Code);
+            await RecordConnectionFailureOutcomeAsync(connector.Source, "DEGRADED", ex.Code);
             throw;
         }
         catch (AuthenticationRequiredException ex)
         {
             SetConnectionState(ads, "AUTH_REQUIRED");
-            await RecordConnectionOutcomeAsync(connector.Source, "AUTH_REQUIRED", ex.StatusCode is int statusCode ? $"HTTP_{statusCode}" : "AUTH_REQUIRED");
+            await RecordConnectionFailureOutcomeAsync(connector.Source, "AUTH_REQUIRED", ex.StatusCode is int statusCode ? $"HTTP_{statusCode}" : "AUTH_REQUIRED");
             throw;
         }
         catch
         {
             SetConnectionState(ads, "ERROR");
-            await RecordConnectionOutcomeAsync(connector.Source, "ERROR", "CONNECTOR_ERROR");
+            await RecordConnectionFailureOutcomeAsync(connector.Source, "ERROR", "CONNECTOR_ERROR");
             throw;
         }
     });
@@ -207,29 +208,31 @@ public partial class MainViewModel(DashboardService dashboard, DatabaseFactory d
         try
         {
             IReportParser parser = ads ? new AdsReportParser() : new SalesTrafficParser();
-            Status = await sync.StepAsync(connector, parser, Scope(), DateOnly.FromDateTime(ReportDate));
+            var syncStatus = await sync.StepAsync(connector, parser, Scope(), DateOnly.FromDateTime(ReportDate));
+            // Do not claim a healthy authorized connection if its connection audit cannot be stored.
+            await dashboard.RecordConnectionAsync(connector.Source, "CONNECTED", "SYNC_AUTHORIZED");
             SetConnectionState(ads, "CONNECTED");
-            await RecordConnectionOutcomeAsync(connector.Source, "CONNECTED", "SYNC_AUTHORIZED");
+            Status = syncStatus;
             await RefreshCoreAsync();
         }
         catch (CapabilityUnavailableException ex)
         {
             SetConnectionState(ads, "DEGRADED");
-            await RecordConnectionOutcomeAsync(connector.Source, "DEGRADED", ex.Code);
+            await RecordConnectionFailureOutcomeAsync(connector.Source, "DEGRADED", ex.Code);
             await RefreshCoreAsync();
             throw;
         }
         catch (AuthenticationRequiredException ex)
         {
             SetConnectionState(ads, "AUTH_REQUIRED");
-            await RecordConnectionOutcomeAsync(connector.Source, "AUTH_REQUIRED", ex.StatusCode is int statusCode ? $"HTTP_{statusCode}" : "AUTH_REQUIRED");
+            await RecordConnectionFailureOutcomeAsync(connector.Source, "AUTH_REQUIRED", ex.StatusCode is int statusCode ? $"HTTP_{statusCode}" : "AUTH_REQUIRED");
             await RefreshCoreAsync();
             throw;
         }
         catch
         {
             SetConnectionState(ads, "ERROR");
-            await RecordConnectionOutcomeAsync(connector.Source, "ERROR", "CONNECTOR_ERROR");
+            await RecordConnectionFailureOutcomeAsync(connector.Source, "ERROR", "CONNECTOR_ERROR");
             await RefreshCoreAsync();
             throw;
         }
