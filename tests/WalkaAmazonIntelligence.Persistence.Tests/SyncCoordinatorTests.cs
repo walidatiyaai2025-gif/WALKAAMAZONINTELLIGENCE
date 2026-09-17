@@ -1,3 +1,4 @@
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using WalkaAmazonIntelligence.Application;
 using WalkaAmazonIntelligence.Domain;
@@ -91,12 +92,14 @@ public sealed class SyncCoordinatorTests
             Assert.Contains("requested", message, StringComparison.OrdinalIgnoreCase);
             Assert.Equal(2, connector.RequestCalls);
 
-            await using var db = factory.Create();
-            var runs = await db.SyncRuns.OrderBy(x => x.StartedUtc).ToListAsync();
-            Assert.Equal(2, runs.Count);
-            Assert.Equal("REPORT_CREATION_CONFIRMED_ABSENT", runs[0].Error);
-            Assert.Equal("TEST_REMOTE_REPORT_456", runs[1].RemoteReportId);
-            Assert.Contains(await db.Audit.ToListAsync(), x => x.Action == "SYNC_REPORT_CREATION_CONFIRMED_ABSENT");
+            await using (var db = factory.Create())
+            {
+                var runs = await db.SyncRuns.OrderBy(x => x.StartedUtc).ToListAsync();
+                Assert.Equal(2, runs.Count);
+                Assert.Equal("REPORT_CREATION_CONFIRMED_ABSENT", runs[0].Error);
+                Assert.Equal("TEST_REMOTE_REPORT_456", runs[1].RemoteReportId);
+                Assert.Contains(await db.Audit.ToListAsync(), x => x.Action == "SYNC_REPORT_CREATION_CONFIRMED_ABSENT");
+            }
         }
         finally
         {
@@ -169,6 +172,7 @@ public sealed class SyncCoordinatorTests
 
     private static void DeleteRoot(string root)
     {
+        SqliteConnection.ClearAllPools();
         if (Directory.Exists(root)) Directory.Delete(root, true);
     }
 
