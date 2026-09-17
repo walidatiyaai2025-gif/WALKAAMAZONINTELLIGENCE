@@ -57,3 +57,11 @@ Domain calculations expose nullable compatibility wrappers for existing callers 
 **Status:** Accepted — 2026-09-17
 
 The persistence boundary must reject an artifact whose declared source does not match the fact type being imported. Seller evidence can materialize Seller facts only; Advertising evidence can materialize Advertising facts only and requires an Ads profile. Artifact identity and natural keys are validated before any destructive replacement starts. Revision replacement remains inside one SQLite transaction so a failed insert, foreign-key violation, reconciliation failure or cancellation cannot commit deletion of the previously authoritative facts. Migration/model drift, foreign keys and unique natural-key constraints are verified by automated tests against a real migrated SQLite database.
+
+## ADR-010 — Ambiguous report creation is fail-closed
+
+**Status:** Accepted — 2026-09-17
+
+Amazon report creation is non-idempotent. The worker persists `REPORT_REQUEST_STARTED` before the remote POST and treats network, cancellation, server-side and malformed-success outcomes as creation-uncertain until a remote report ID is durably stored. An uncertain attempt must not be automatically posted again. Recovery requires either attaching the confirmed remote report ID or explicitly confirming that no remote report exists; both actions are audited.
+
+Once a remote report ID is persisted it remains authoritative across polling, download, parsing, import failures and cancellation, so subsequent attempts resume that report instead of creating a replacement. A fresh report may be requested after an explicit confirmed-absent reconciliation or a terminal remote report state. Audit details use bounded machine-readable codes and never exception messages, authorization data, report document URLs or token payloads.

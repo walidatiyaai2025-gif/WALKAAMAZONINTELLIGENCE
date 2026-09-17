@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\WalkaAmazonIntelligence.Persistence\WalkaAmazonIntelligence.Persistence.csproj" />
+    <ProjectReference Include="..\..\src\WalkaAmazonIntelligence.Worker\WalkaAmazonIntelligence.Worker.csproj" />
   </ItemGroup>
 
 </Project>

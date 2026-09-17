@@ -10,6 +10,11 @@ public interface IAccessTokenProvider { Task<string> GetAsync(CancellationToken 
 public sealed class AuthenticationRequiredException() : Exception("AUTH_REQUIRED: configure or renew Amazon authorization.");
 public sealed class RemoteApiException(int status) : Exception($"Amazon request failed (HTTP {status}).")
 { public int StatusCode { get; } = status; }
+public sealed class ReportCreationUncertainException(Guid syncRunId, Exception? inner = null)
+    : Exception($"Amazon report creation outcome is uncertain for sync run {syncRunId}. Reconcile the remote report before retrying.", inner)
+{
+    public Guid SyncRunId { get; } = syncRunId;
+}
 public sealed record ReportTicket(string Id, string Status, Uri? DownloadUri = null, string? Compression = null, DateTime? GeneratedUtc = null);
 public interface IReportConnector
 {
