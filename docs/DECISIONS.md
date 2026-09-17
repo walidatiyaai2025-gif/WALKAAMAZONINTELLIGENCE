@@ -45,3 +45,9 @@ LWA refresh tokens/client secrets are protected locally with Windows DPAPI Curre
 **Status:** Accepted — 2026-09-17
 
 The repository baseline is not considered complete solely because the solution exists. GitHub Actions runs on Windows and performs `dotnet restore`, Release `dotnet build`, and `dotnet test` for the solution on pushes and pull requests targeting `main`. New work must keep this gate green; warnings remain errors through `Directory.Build.props`.
+
+## ADR-008 — Derived metrics are reason-coded and scope-aware
+
+**Status:** Accepted — 2026-09-17
+
+Domain calculations expose nullable compatibility wrappers for existing callers and richer result objects that carry a machine-readable unavailability reason. Missing inputs, zero denominators, invalid negative inputs, incompatible account/market/currency/date windows, attribution exceeding total sales, invalid conversion rates and nonpositive inventory velocity are distinct states rather than silent zeroes. Aggregate ratios are calculated from summed numerators and denominators, not averaged row ratios. Organic-sales estimates require compatible scope and reporting windows. Stockout dates round fractional days of supply upward to the next observation date and remain unavailable when velocity is nonpositive.
