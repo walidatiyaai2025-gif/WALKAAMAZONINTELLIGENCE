@@ -67,7 +67,6 @@ public sealed class SyncCoordinator(DatabaseFactory factory, EvidenceArchive arc
                 run.RemoteReportId = ticket.Id.Trim();
                 run.Error = null;
                 run.Status = JobStatus.Pending;
-                reportCreationStarted = false;
                 db.Audit.Add(new()
                 {
                     Action = "SYNC_REPORT_ID_SAVED",
@@ -75,6 +74,7 @@ public sealed class SyncCoordinator(DatabaseFactory factory, EvidenceArchive arc
                     Detail = AuditDetail(connector.Source, "REMOTE_REPORT_ID_PERSISTED")
                 });
                 await db.SaveChangesAsync(ct);
+                reportCreationStarted = false;
                 return "Report requested. Use Check reports to retrieve it when Amazon finishes generation.";
             }
 
